@@ -21,6 +21,5 @@ def requestUser(username):
     response = urllib.request.urlopen(url)
     data = response.read() # a bytes object
     text = data.decode('utf-8')
-    print(text)
     xml = XML(text)
     return xml

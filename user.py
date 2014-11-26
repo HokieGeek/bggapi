@@ -12,8 +12,8 @@ class user:
     collection = None
     plays = None
 
-    def __init__(self):
-        print("Created a new user")
+    # def __init__(self):
+        # print("Created a new user")
 
     def tostring(self):
         string = "USER {"

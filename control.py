@@ -4,7 +4,7 @@ from . import xmlapi
 class control:
     # collections = None
     # plays = None
-    # users = None
+    users = {}
 
     def getUser(self, username):
         # print("getUser('%s')" % username)
@@ -21,6 +21,8 @@ class control:
         userobj.stateorprovince = xmlobj.findall('stateorprovince')[0].get('value')
         userobj.country = xmlobj.findall('country')[0].get('value')
         userobj.traderating = xmlobj.findall('traderating')[0].get('value')
+
+        self.users[username] = userobj
 
         return userobj
 
