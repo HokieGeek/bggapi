@@ -12,9 +12,6 @@ class user:
     collection = None
     plays = None
 
-    # def __init__(self):
-        # print("Created a new user")
-
     def tostring(self):
         string = "USER {"
         string += "\n\tusername = {}".format(self.username)
@@ -30,4 +27,5 @@ class user:
         # collection = None
         # plays = None
         string += "\n}"
+
         return string

@@ -11,14 +11,17 @@ def performRequest(url):
     response = urllib.request.urlopen(url)
     data = response.read() # a bytes object
     text = data.decode('utf-8')
+    # print(text)
     xml = XML(text)
     return xml
 
-def requestPlays():
+def requestPlaysForUser(username):
+    # url = URL_PLAYS + "?username=" + username + "&page=1"
+    # Remember that need to retrieve multiple pages
     return "TODO"
 
-def requestCollection():
-    url = URL_USERS + "?username=" + username
+def requestCollectionForUser(username):
+    url = URL_COLLECTION + "?username=" + username
     return performRequest(url)
 
 def requestUser(username):

@@ -11,7 +11,7 @@ class control:
         # print("getUser('%s')" % username)
 
         if username not in self.users:
-            print("TRACE: performing user request")
+            # print("TRACE: performing user request")
             userobj = user.user()
             xmlobj = xmlapi.requestUser(username)
 
@@ -35,12 +35,44 @@ class control:
         return "TODO"
 
     def getUserCollection(self, username):
-        print("getUserCollection('%s')" % username)
+        # print("getUserCollection('%s')" % username)
 
         if username not in self.collections:
-            print("TRACE: performing collection request")
-        # usercollection = collection.collection()
+            # print("TRACE: performing collection request")
 
-        # self.collections[username] = collection
+            usercollection = collection.collection()
+            xmlobj = xmlapi.requestCollectionForUser(username);
+
+            for xmlitem in xmlobj.findall('item'):
+                item = collection.item()
+                item.id = xmlitem.get('objectid')
+                item.subtype = xmlitem.get('subtype')
+                item.name = xmlitem.findall('name')[0].text
+                yearpublishedobj = xmlitem.findall('yearpublished')
+                if len(yearpublishedobj) > 0:
+                    item.yearpublished = yearpublishedobj[0].text
+                # item.yearpublished = xmlitem.findall('yearpublished')[0].text
+                imageobj = xmlitem.findall('image')
+                if len(imageobj) > 0:
+                    item.image = imageobj[0].text
+                # item.image = xmlitem.findall('image')[0].text
+                thumbnailobj = xmlitem.findall('thumbnail')
+                if len(thumbnailobj) > 0:
+                    item.thumbnail = thumbnailobj[0].text
+                # item.thumbnail = xmlitem.findall('thumbnail')[0].text
+                item.numplays = xmlitem.findall('numplays')[0].text
+
+                item.status = None
+
+                commentobj = xmlitem.findall('comment')
+                if len(commentobj) > 0:
+                    item.comment = commentobj[0].text
+                wishlistcommentobj = xmlitem.findall('wishlistcomment')
+                if len(wishlistcommentobj) > 0:
+                    item.wishlistcomment = wishlistcommentobj[0].text
+
+                usercollection.append(item)
+
+            self.collections[username] = usercollection
 
         return self.collections[username]
