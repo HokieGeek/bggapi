@@ -63,7 +63,7 @@ class collection:
         string += "\n\t{}".format(self.lastUpdated)
         string += "\n\titems = ({})".format(len(self.items))
         for i in self.items:
-            string += "\n\t {}".format(i.tostring())
+            string += "\n\t{}".format(i.tostring())
         string += "\n}"
 
         return string
