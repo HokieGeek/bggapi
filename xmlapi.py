@@ -35,6 +35,10 @@ def _processPlaysRequest(url):
     # TODO: verify that num play items == numrecords
     return xmlobj
 
+def requestGamePlaysForUser(gameid, username):
+    url = URL_PLAYS + "?username=" + username + "&id=" + gameid
+    return _processPlaysRequest(url)
+
 def requestPlaysForUser(username):
     url = URL_PLAYS + "?username=" + username
     return _processPlaysRequest(url)

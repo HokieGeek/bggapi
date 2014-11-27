@@ -93,6 +93,9 @@ class control:
             self.plays[username] = userplays
         return self.plays[username]
 
+    # def getUserPlaysForGame(self, username, gameid):
+        # asdfsadfa
+
     def getUserCollection(self, username):
         if username not in self.collections:
             usercollection = collection.collection()
