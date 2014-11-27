@@ -9,7 +9,7 @@ URL_COLLECTION = HOST + "/xmlapi2/collection"
 URL_PLAYS = HOST + "/xmlapi2/plays"
 URL_USERS = HOST + "/xmlapi2/users"
 
-def _performRequest(url):
+def __performRequest(url):
     response = urllib.request.urlopen(url)
     data = response.read() # a bytes object
     text = data.decode('utf-8')
@@ -17,7 +17,7 @@ def _performRequest(url):
     xml = XML(text)
     return xml
 
-def _processPlaysRequest(url):
+def __processPlaysRequest(url):
     xmlobj = _performRequest(url + "&page=1")
 
     numrecords = float(xmlobj.get('total'))
@@ -37,16 +37,16 @@ def _processPlaysRequest(url):
 
 def requestGamePlaysForUser(gameid, username):
     url = URL_PLAYS + "?username=" + username + "&id=" + gameid
-    return _processPlaysRequest(url)
+    return __processPlaysRequest(url)
 
 def requestPlaysForUser(username):
     url = URL_PLAYS + "?username=" + username
-    return _processPlaysRequest(url)
+    return __processPlaysRequest(url)
 
 def requestCollectionForUser(username):
     url = URL_COLLECTION + "?username=" + username
-    return _performRequest(url)
+    return __performRequest(url)
 
 def requestUser(username):
     url = URL_USERS + "?name=" + username
-    return _performRequest(url)
+    return __performRequest(url)
