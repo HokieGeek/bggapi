@@ -4,8 +4,8 @@ from . import collection
 from . import plays
 
 collections = {}
-plays = {}
-users = {}
+playsList = {}
+usersList = {}
 
 def __buildPlayObject(xmlobj):
     playobj = plays.play()
@@ -77,9 +77,9 @@ def getUser(username):
         userobj.country = xmlobj.findall('country')[0].get('value')
         userobj.traderating = xmlobj.findall('traderating')[0].get('value')
 
-        users[username] = userobj
+        usersList[username] = userobj
 
-    return users[username]
+    return usersList[username]
 
 def getUserPlays(username):
     if username not in plays:
@@ -89,11 +89,8 @@ def getUserPlays(username):
         for p in xmlobj.findall('play'):
             userplays.append(__buildPlayObject(p))
 
-        plays[username] = userplays
-    return plays[username]
-
-# def getUserPlaysForGame(username, gameid):
-    # asdfsadfa
+        playsList[username] = userplays
+    return playsList[username]
 
 def getUserCollection(username):
     if username not in collections:
@@ -107,3 +104,11 @@ def getUserCollection(username):
 
     return collections[username]
 
+def getUserPlaysForGame(username, gameid):
+    gameplays = plays.plays()
+    xmlobj = xmlapi.requestGamePlaysForUser(username, gameid)
+
+    for p in xmlobj.findall('play'):
+        gameplays.append(__buildPlayObject(p))
+
+    return gameplays

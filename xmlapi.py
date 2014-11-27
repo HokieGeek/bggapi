@@ -18,7 +18,7 @@ def __performRequest(url):
     return xml
 
 def __processPlaysRequest(url):
-    xmlobj = _performRequest(url + "&page=1")
+    xmlobj = __performRequest(url + "&page=1")
 
     numrecords = float(xmlobj.get('total'))
     numremainingpages = int(numrecords / NUM_PLAY_RECORDS_PER_PAGE)
@@ -27,7 +27,7 @@ def __processPlaysRequest(url):
     # print("TRACE: numremainingpages = {}".format(numremainingpages))
 
     for page in range(2, numremainingpages+2):
-        nextpage = _performRequest(url + "&page={}".format(page))
+        nextpage = __performRequest(url + "&page={}".format(page))
         for nextplay in nextpage.findall('play'):
             xmlobj.append(nextplay)
         # print("TRACE: xmlobj count = {}".format(len(xmlobj.findall('play'))))
@@ -35,8 +35,8 @@ def __processPlaysRequest(url):
     # TODO: verify that num play items == numrecords
     return xmlobj
 
-def requestGamePlaysForUser(gameid, username):
-    url = URL_PLAYS + "?username=" + username + "&id=" + gameid
+def requestGamePlaysForUser(username, gameid):
+    url = URL_PLAYS + "?username=" + username + "&id=" + str(gameid)
     return __processPlaysRequest(url)
 
 def requestPlaysForUser(username):
