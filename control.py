@@ -8,29 +8,6 @@ class control:
     plays = {}
     users = {}
 
-    def getUser(self, username):
-        # print("getUser('%s')" % username)
-
-        if username not in self.users:
-            # print("TRACE: performing user request")
-            userobj = user.user()
-            xmlobj = xmlapi.requestUser(username)
-
-            userobj.username = xmlobj.get('name')
-            userobj.id = xmlobj.get('id')
-            userobj.firstname = xmlobj.findall('firstname')[0].get('value')
-            userobj.lastname = xmlobj.findall('lastname')[0].get('value')
-            userobj.avatarlink = xmlobj.findall('avatarlink')[0].get('value')
-            userobj.yearregistered = xmlobj.findall('yearregistered')[0].get('value')
-            userobj.lastlogin = xmlobj.findall('lastlogin')[0].get('value')
-            userobj.stateorprovince = xmlobj.findall('stateorprovince')[0].get('value')
-            userobj.country = xmlobj.findall('country')[0].get('value')
-            userobj.traderating = xmlobj.findall('traderating')[0].get('value')
-
-            self.users[username] = userobj
-
-        return self.users[username]
-
     def _buildPlayObject(self, xmlobj):
         playobj = plays.play()
         playobj.id = xmlobj.get('id')
@@ -58,8 +35,54 @@ class control:
             playobj.players.append(playerobj)
         return playobj
 
+    def _buildItemObject(self, xmlobj):
+        item = collection.item()
+        item.id = xmlobj.get('objectid')
+        item.subtype = xmlobj.get('subtype')
+        item.name = xmlobj.findall('name')[0].text
+        yearpublishedobj = xmlobj.findall('yearpublished')
+        if len(yearpublishedobj) > 0:
+            item.yearpublished = yearpublishedobj[0].text
+        imageobj = xmlobj.findall('image')
+        if len(imageobj) > 0:
+            item.image = imageobj[0].text
+        thumbnailobj = xmlobj.findall('thumbnail')
+        if len(thumbnailobj) > 0:
+            item.thumbnail = thumbnailobj[0].text
+        item.numplays = xmlobj.findall('numplays')[0].text
+
+        item.status = None
+
+        commentobj = xmlobj.findall('comment')
+        if len(commentobj) > 0:
+            item.comment = commentobj[0].text
+        wishlistcommentobj = xmlobj.findall('wishlistcomment')
+        if len(wishlistcommentobj) > 0:
+            item.wishlistcomment = wishlistcommentobj[0].text
+
+        return item
+
+    def getUser(self, username):
+        if username not in self.users:
+            userobj = user.user()
+            xmlobj = xmlapi.requestUser(username)
+
+            userobj.username = xmlobj.get('name')
+            userobj.id = xmlobj.get('id')
+            userobj.firstname = xmlobj.findall('firstname')[0].get('value')
+            userobj.lastname = xmlobj.findall('lastname')[0].get('value')
+            userobj.avatarlink = xmlobj.findall('avatarlink')[0].get('value')
+            userobj.yearregistered = xmlobj.findall('yearregistered')[0].get('value')
+            userobj.lastlogin = xmlobj.findall('lastlogin')[0].get('value')
+            userobj.stateorprovince = xmlobj.findall('stateorprovince')[0].get('value')
+            userobj.country = xmlobj.findall('country')[0].get('value')
+            userobj.traderating = xmlobj.findall('traderating')[0].get('value')
+
+            self.users[username] = userobj
+
+        return self.users[username]
+
     def getUserPlays(self, username):
-        print("getUserPlays('%s')" % username)
         if username not in self.plays:
             userplays = plays.plays()
             xmlobj = xmlapi.requestPlaysForUser(username)
@@ -71,40 +94,12 @@ class control:
         return self.plays[username]
 
     def getUserCollection(self, username):
-        # print("getUserCollection('%s')" % username)
-
         if username not in self.collections:
-            # print("TRACE: performing collection request")
-
             usercollection = collection.collection()
             xmlobj = xmlapi.requestCollectionForUser(username);
 
             for xmlitem in xmlobj.findall('item'):
-                item = collection.item()
-                item.id = xmlitem.get('objectid')
-                item.subtype = xmlitem.get('subtype')
-                item.name = xmlitem.findall('name')[0].text
-                yearpublishedobj = xmlitem.findall('yearpublished')
-                if len(yearpublishedobj) > 0:
-                    item.yearpublished = yearpublishedobj[0].text
-                imageobj = xmlitem.findall('image')
-                if len(imageobj) > 0:
-                    item.image = imageobj[0].text
-                thumbnailobj = xmlitem.findall('thumbnail')
-                if len(thumbnailobj) > 0:
-                    item.thumbnail = thumbnailobj[0].text
-                item.numplays = xmlitem.findall('numplays')[0].text
-
-                item.status = None
-
-                commentobj = xmlitem.findall('comment')
-                if len(commentobj) > 0:
-                    item.comment = commentobj[0].text
-                wishlistcommentobj = xmlitem.findall('wishlistcomment')
-                if len(wishlistcommentobj) > 0:
-                    item.wishlistcomment = wishlistcommentobj[0].text
-
-                usercollection.append(item)
+                usercollection.append(self._buildItemObject(xmlitem))
 
             self.collections[username] = usercollection
 
